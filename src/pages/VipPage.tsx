@@ -1,0 +1,135 @@
+import { motion } from "framer-motion";
+import { Crown, Check, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useProfile } from "@/hooks/useProfile";
+import { VIP_LEVELS } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
+export function VipPage() {
+  const { profile } = useProfile();
+  const currentVipLevel = profile?.vip_level || 0;
+
+  const handleUpgrade = (level: number) => {
+    if (level <= currentVipLevel) {
+      toast.info("თქვენ უკვე გაქვთ ეს VIP დონე");
+      return;
+    }
+    toast.info("VIP-ის შესაძენად შეავსეთ ბალანსი ფინანსების განყოფილებაში");
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <div className="inline-flex items-center justify-center p-3 rounded-2xl gradient-gold shadow-gold mb-4">
+          <Crown className="h-8 w-8 text-primary-foreground" />
+        </div>
+        <h1 className="text-2xl font-bold text-foreground mb-1">VIP ცენტრი</h1>
+        <p className="text-muted-foreground text-sm">
+          განაახლეთ VIP და მიიღეთ მეტი ჯილდო
+        </p>
+      </motion.div>
+
+      {/* Current VIP Status */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="gradient-gold rounded-2xl p-5 shadow-gold text-center"
+      >
+        <p className="text-primary-foreground/80 text-sm mb-1">თქვენი VIP სტატუსი</p>
+        <p className="text-primary-foreground font-bold text-2xl">
+          {VIP_LEVELS[currentVipLevel].name}
+        </p>
+        <p className="text-primary-foreground/80 text-sm mt-2">
+          ჯილდო დავალებაზე: ${VIP_LEVELS[currentVipLevel].reward.toFixed(2)}
+        </p>
+      </motion.div>
+
+      {/* VIP Levels */}
+      <div className="space-y-4">
+        {VIP_LEVELS.slice(1).map((vip, index) => {
+          const isOwned = currentVipLevel >= vip.level;
+          const isCurrent = currentVipLevel === vip.level;
+          
+          return (
+            <motion.div
+              key={vip.level}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={cn(
+                "gradient-card rounded-2xl p-5 shadow-card border",
+                isCurrent ? "border-primary" : "border-border/30",
+                isOwned && "opacity-80"
+              )}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={cn("p-2 rounded-xl bg-gradient-to-br", vip.color)}>
+                    <Star className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-foreground flex items-center gap-2">
+                      {vip.name}
+                      {isCurrent && (
+                        <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">
+                          აქტიური
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      ფასი: ${vip.price}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-muted-foreground text-xs">ჯილდო</p>
+                  <p className="text-success font-bold text-lg">${vip.reward.toFixed(2)}</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                  <Check className="h-4 w-4 text-success" />
+                  <span>გაზრდილი ჯილდო დავალებებზე</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                  <Check className="h-4 w-4 text-success" />
+                  <span>პრიორიტეტული მხარდაჭერა</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                  <Check className="h-4 w-4 text-success" />
+                  <span>ექსკლუზიური დავალებები</span>
+                </div>
+              </div>
+
+              <Button
+                onClick={() => handleUpgrade(vip.level)}
+                disabled={isOwned}
+                className={cn(
+                  "w-full",
+                  !isOwned && "gradient-gold text-primary-foreground shadow-gold hover:opacity-90"
+                )}
+                variant={isOwned ? "secondary" : "default"}
+              >
+                {isOwned ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    შეძენილია
+                  </>
+                ) : (
+                  `შეიძინე $${vip.price}-ად`
+                )}
+              </Button>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
