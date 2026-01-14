@@ -32,6 +32,22 @@ export const TASKS = [
     url: "https://www.instagram.com/autoearnmedia_/",
     color: "from-pink-500 to-purple-500",
   },
+  {
+    id: "instagram_like",
+    name: "Instagram პოსტის მოწონება",
+    description: "დაალაიქეთ მოცემული პოსტი ინსტაგრამზე",
+    icon: "Instagram",
+    url: "https://www.instagram.com/p/DTgF5FlCg72/",
+    color: "from-pink-500 to-purple-500",
+  },
+  {
+    id: "facebook_like",
+    name: "Facebook პოსტის დალაიქება",
+    description: "გადადით ლინკზე და მოიწონეთ პოსტი",
+    icon: "Facebook",
+    url: "https://www.facebook.com/share/p/1BmKmKuqQj/",
+    color: "from-blue-600 to-blue-700",
+  },
 ];
 
 export const DEPOSIT_ADDRESS = "TJ7Hhzgz7y6N3pYUCqPuMBDeAAYaT2PYNE";
