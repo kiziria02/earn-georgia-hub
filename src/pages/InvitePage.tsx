@@ -82,27 +82,6 @@ export function InvitePage() {
         </div>
       </motion.div>
 
-      {/* Referral Link */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="gradient-card rounded-2xl p-5 shadow-card border border-border/30"
-      >
-        <h3 className="font-semibold text-foreground mb-4">თქვენი რეფერალ ბმული</h3>
-        <div className="p-3 rounded-xl bg-secondary/50 border border-border mb-4">
-          <p className="text-sm text-muted-foreground break-all">
-            {referralLink || "იტვირთება..."}
-          </p>
-        </div>
-        <Button 
-          onClick={copyLink} 
-          className="w-full gradient-gold text-primary-foreground shadow-gold hover:opacity-90"
-        >
-          <Copy className="h-4 w-4 mr-2" />
-          ბმულის კოპირება
-        </Button>
-      </motion.div>
 
       {/* Invited Users List */}
       <motion.div
