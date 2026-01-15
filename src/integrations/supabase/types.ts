@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocked_devices: {
+        Row: {
+          blocked_at: string
+          device_fingerprint: string | null
+          id: string
+          ip_address: string | null
+          is_active: boolean | null
+          reason: string
+          telegram_id: string | null
+        }
+        Insert: {
+          blocked_at?: string
+          device_fingerprint?: string | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          reason: string
+          telegram_id?: string | null
+        }
+        Update: {
+          blocked_at?: string
+          device_fingerprint?: string | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          reason?: string
+          telegram_id?: string | null
+        }
+        Relationships: []
+      }
       deposits: {
         Row: {
           amount: number
@@ -50,10 +80,14 @@ export type Database = {
         Row: {
           balance: number
           created_at: string
+          device_fingerprint: string | null
           id: string
+          is_suspicious: boolean | null
           nickname: string
           referral_code: string
           referrer_id: string | null
+          registration_ip: string | null
+          telegram_id: string | null
           total_earned: number
           updated_at: string
           user_id: string | null
@@ -62,10 +96,14 @@ export type Database = {
         Insert: {
           balance?: number
           created_at?: string
+          device_fingerprint?: string | null
           id?: string
+          is_suspicious?: boolean | null
           nickname: string
           referral_code?: string
           referrer_id?: string | null
+          registration_ip?: string | null
+          telegram_id?: string | null
           total_earned?: number
           updated_at?: string
           user_id?: string | null
@@ -74,10 +112,14 @@ export type Database = {
         Update: {
           balance?: number
           created_at?: string
+          device_fingerprint?: string | null
           id?: string
+          is_suspicious?: boolean | null
           nickname?: string
           referral_code?: string
           referrer_id?: string | null
+          registration_ip?: string | null
+          telegram_id?: string | null
           total_earned?: number
           updated_at?: string
           user_id?: string | null
@@ -92,6 +134,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      registration_attempts: {
+        Row: {
+          attempted_at: string
+          block_reason: string | null
+          device_fingerprint: string | null
+          id: string
+          ip_address: string
+          was_blocked: boolean | null
+        }
+        Insert: {
+          attempted_at?: string
+          block_reason?: string | null
+          device_fingerprint?: string | null
+          id?: string
+          ip_address: string
+          was_blocked?: boolean | null
+        }
+        Update: {
+          attempted_at?: string
+          block_reason?: string | null
+          device_fingerprint?: string | null
+          id?: string
+          ip_address?: string
+          was_blocked?: boolean | null
+        }
+        Relationships: []
       }
       task_completions: {
         Row: {
@@ -165,7 +234,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_registration_allowed: {
+        Args: {
+          p_device_fingerprint: string
+          p_ip_address: string
+          p_telegram_id?: string
+        }
+        Returns: Json
+      }
+      log_registration_attempt: {
+        Args: {
+          p_block_reason?: string
+          p_device_fingerprint: string
+          p_ip_address: string
+          p_was_blocked?: boolean
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
