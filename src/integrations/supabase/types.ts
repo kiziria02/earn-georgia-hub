@@ -135,6 +135,48 @@ export type Database = {
           },
         ]
       }
+      referral_rewards: {
+        Row: {
+          created_at: string
+          id: string
+          referred_id: string
+          referrer_id: string
+          reward_amount: number
+          reward_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referred_id: string
+          referrer_id: string
+          reward_amount: number
+          reward_type?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referred_id?: string
+          referrer_id?: string
+          reward_amount?: number
+          reward_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_rewards_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       registration_attempts: {
         Row: {
           attempted_at: string
@@ -194,6 +236,38 @@ export type Database = {
           },
         ]
       }
+      vip_purchases: {
+        Row: {
+          amount: number
+          id: string
+          profile_id: string
+          purchased_at: string
+          vip_level: number
+        }
+        Insert: {
+          amount: number
+          id?: string
+          profile_id: string
+          purchased_at?: string
+          vip_level: number
+        }
+        Update: {
+          amount?: number
+          id?: string
+          profile_id?: string
+          purchased_at?: string
+          vip_level?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vip_purchases_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       withdrawals: {
         Row: {
           amount: number
@@ -241,6 +315,11 @@ export type Database = {
           p_telegram_id?: string
         }
         Returns: Json
+      }
+      get_referral_reward: { Args: { p_vip_level: number }; Returns: number }
+      get_task_commission_rate: {
+        Args: { p_vip_level: number }
+        Returns: number
       }
       log_registration_attempt: {
         Args: {
