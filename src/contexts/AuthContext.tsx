@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { getDeviceFingerprint } from "@/hooks/useDeviceFingerprint";
 
 interface AuthContextType {
   user: User | null;
@@ -10,13 +9,6 @@ interface AuthContextType {
   signUp: (email: string, password: string, nickname: string, referralCode?: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-}
-
-interface ValidationResult {
-  allowed: boolean;
-  reason?: string;
-  message?: string;
-  clientIp?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,40 +35,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, nickname: string, referralCode?: string) => {
-    // Get device fingerprint first
-    let deviceFingerprint: string;
-    let components: Record<string, unknown>;
-    
-    try {
-      const fpResult = await getDeviceFingerprint();
-      deviceFingerprint = fpResult.fingerprint;
-      components = fpResult.components;
-    } catch {
-      throw new Error("მოწყობილობის იდენტიფიკაცია ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.");
-    }
-
-    // Validate registration with anti-fraud system
-    const validationResponse = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/validate-registration`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-        },
-        body: JSON.stringify({
-          deviceFingerprint,
-          components,
-        }),
-      }
-    );
-
-    const validationResult: ValidationResult = await validationResponse.json();
-
-    if (!validationResult.allowed) {
-      throw new Error(validationResult.message || "რეგისტრაცია დაბლოკილია");
-    }
-
     // Check if referral code is valid
     let referrerId: string | null = null;
     if (referralCode) {
@@ -99,15 +57,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
 
     if (data.user) {
-      // Create profile with anti-fraud data
+      // Create profile
       const { error: profileError } = await supabase
         .from("profiles")
         .insert({
           user_id: data.user.id,
           nickname,
           referrer_id: referrerId,
-          device_fingerprint: deviceFingerprint,
-          registration_ip: validationResult.clientIp || null,
         });
 
       if (profileError) throw profileError;
