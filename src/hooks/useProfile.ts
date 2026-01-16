@@ -28,7 +28,7 @@ export function useProfile() {
       if (!profile?.id) return [];
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, nickname, created_at")
+        .select("id, nickname, created_at, vip_level")
         .eq("referrer_id", profile.id);
       
       if (error) throw error;
