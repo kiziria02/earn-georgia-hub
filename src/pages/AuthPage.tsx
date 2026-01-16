@@ -57,8 +57,14 @@ export function AuthPage() {
         transition={{ duration: 0.5 }}
         className="mb-8 text-center"
       >
-        <div className="inline-flex items-center justify-center p-4 rounded-3xl gradient-gold shadow-gold mb-4 animate-float">
-          <Coins className="h-12 w-12 text-primary-foreground" />
+        <div 
+          className="inline-flex items-center justify-center p-4 rounded-3xl mb-4 animate-float"
+          style={{
+            background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+            boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+          }}
+        >
+          <Coins className="h-12 w-12 text-white" />
         </div>
         <h1 className="text-3xl font-bold text-gradient-gold">AutoEarn</h1>
         <p className="text-muted-foreground mt-2">გამოიმუშავე ფული მარტივად</p>
@@ -141,7 +147,11 @@ export function AuthPage() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full gradient-gold text-primary-foreground shadow-gold hover:opacity-90 py-6 text-lg font-semibold"
+            className="w-full py-6 text-lg font-semibold text-white hover:opacity-90"
+            style={{
+              background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+              boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+            }}
           >
             {isLoading ? "იტვირთება..." : isLogin ? "შესვლა" : "რეგისტრაცია"}
           </Button>

@@ -41,7 +41,8 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
               {isActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 gradient-gold opacity-10 rounded-xl"
+                  className="absolute inset-0 rounded-xl opacity-20"
+                  style={{ background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)" }}
                   transition={{ type: "spring", duration: 0.5 }}
                 />
               )}

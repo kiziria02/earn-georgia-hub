@@ -57,18 +57,22 @@ export function TasksPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="gradient-gold rounded-2xl p-4 shadow-gold"
+        className="rounded-2xl p-4"
+        style={{
+          background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+          boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+        }}
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-primary-foreground/80 text-sm">თქვენი VIP დონე</p>
-            <p className="text-primary-foreground font-bold text-lg">
+            <p className="text-white/80 text-sm">თქვენი VIP დონე</p>
+            <p className="text-white font-bold text-lg">
               {VIP_LEVELS[vipLevel].name}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-primary-foreground/80 text-sm">ჯილდო დავალებაზე</p>
-            <p className="text-primary-foreground font-bold text-lg">${reward.toFixed(2)}</p>
+            <p className="text-white/80 text-sm">ჯილდო დავალებაზე</p>
+            <p className="text-white font-bold text-lg">${reward.toFixed(2)}</p>
           </div>
         </div>
       </motion.div>
@@ -109,8 +113,12 @@ export function TasksPage() {
                   variant={isCompleted ? "secondary" : "default"}
                   size="sm"
                   className={cn(
-                    !isCompleted && "gradient-gold text-primary-foreground shadow-gold hover:opacity-90"
+                    !isCompleted && "text-white hover:opacity-90"
                   )}
+                  style={!isCompleted ? {
+                    background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+                    boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+                  } : undefined}
                 >
                   {isCompleted ? (
                     "შესრულდა"
