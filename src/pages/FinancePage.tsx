@@ -80,8 +80,14 @@ export function FinancePage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center"
       >
-        <div className="inline-flex items-center justify-center p-3 rounded-2xl gradient-gold shadow-gold mb-4">
-          <Wallet className="h-8 w-8 text-primary-foreground" />
+        <div 
+          className="inline-flex items-center justify-center p-3 rounded-2xl mb-4"
+          style={{
+            background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+            boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+          }}
+        >
+          <Wallet className="h-8 w-8 text-white" />
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-1">ფინანსები</h1>
         <p className="text-muted-foreground text-sm">
@@ -96,9 +102,13 @@ export function FinancePage() {
           className={cn(
             "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-all",
             activeTab === "deposit"
-              ? "gradient-gold text-primary-foreground shadow-gold"
+              ? "text-white"
               : "text-muted-foreground hover:text-foreground"
           )}
+          style={activeTab === "deposit" ? {
+            background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+            boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+          } : undefined}
         >
           <ArrowDownCircle className="h-5 w-5" />
           შეტანა
@@ -108,9 +118,13 @@ export function FinancePage() {
           className={cn(
             "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-all",
             activeTab === "withdraw"
-              ? "gradient-gold text-primary-foreground shadow-gold"
+              ? "text-white"
               : "text-muted-foreground hover:text-foreground"
           )}
+          style={activeTab === "withdraw" ? {
+            background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+            boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+          } : undefined}
         >
           <ArrowUpCircle className="h-5 w-5" />
           გატანა
@@ -141,7 +155,11 @@ export function FinancePage() {
 
             <Button
               onClick={copyAddress}
-              className="w-full gradient-gold text-primary-foreground shadow-gold hover:opacity-90"
+              className="w-full text-white hover:opacity-90"
+              style={{
+                background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+                boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+              }}
             >
               {copied ? (
                 <>
@@ -193,7 +211,11 @@ export function FinancePage() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full gradient-gold text-primary-foreground shadow-gold hover:opacity-90"
+              className="w-full text-white hover:opacity-90"
+              style={{
+                background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+                boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+              }}
             >
               {isSubmitting ? "იგზავნება..." : "გატანის მოთხოვნა"}
             </Button>

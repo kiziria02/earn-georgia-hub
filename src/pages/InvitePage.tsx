@@ -30,8 +30,14 @@ export function InvitePage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center"
       >
-        <div className="inline-flex items-center justify-center p-3 rounded-2xl gradient-gold shadow-gold mb-4">
-          <Users className="h-8 w-8 text-primary-foreground" />
+        <div 
+          className="inline-flex items-center justify-center p-3 rounded-2xl mb-4"
+          style={{
+            background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+            boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+          }}
+        >
+          <Users className="h-8 w-8 text-white" />
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-1">მოიწვიე მეგობრები</h1>
         <p className="text-muted-foreground text-sm">
@@ -43,21 +49,25 @@ export function InvitePage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="gradient-gold rounded-2xl p-5 shadow-gold"
+        className="rounded-2xl p-5"
+        style={{
+          background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
+          boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+        }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-white/20">
-              <Gift className="h-6 w-6 text-primary-foreground" />
+              <Gift className="h-6 w-6 text-white" />
             </div>
             <div>
-              <p className="text-primary-foreground/80 text-sm">მოწვეული მეგობრები</p>
-              <p className="text-primary-foreground font-bold text-2xl">{referrals.length}</p>
+              <p className="text-white/80 text-sm">მოწვეული მეგობრები</p>
+              <p className="text-white font-bold text-2xl">{referrals.length}</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-primary-foreground/80 text-sm">გამომუშავებული</p>
-            <p className="text-primary-foreground font-bold text-2xl">
+            <p className="text-white/80 text-sm">გამომუშავებული</p>
+            <p className="text-white font-bold text-2xl">
               ${(referrals.length * 0.25).toFixed(2)}
             </p>
           </div>
@@ -106,8 +116,11 @@ export function InvitePage() {
                 className="flex items-center justify-between p-3 rounded-xl bg-secondary/30"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full gradient-gold flex items-center justify-center">
-                    <span className="text-primary-foreground font-bold">
+                  <div 
+                    className="w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{ background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)" }}
+                  >
+                    <span className="text-white font-bold">
                       {referral.nickname.charAt(0).toUpperCase()}
                     </span>
                   </div>
