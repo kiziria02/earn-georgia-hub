@@ -1,19 +1,15 @@
 import { motion } from "framer-motion";
-import { Users, Copy, Gift, UserPlus } from "lucide-react";
+import { Users, Copy, Gift, UserPlus, Target, Crown, Percent } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProfile } from "@/hooks/useProfile";
+import { VIP_LEVELS, REFERRAL_MILESTONES, FREE_VIP_REQUIREMENT } from "@/lib/constants";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export function InvitePage() {
   const { profile, referrals } = useProfile();
-  const referralLink = profile?.referral_code 
-    ? `${window.location.origin}?ref=${profile.referral_code}`
-    : "";
-
-  const copyLink = () => {
-    navigator.clipboard.writeText(referralLink);
-    toast.success("ბმული დაკოპირდა!");
-  };
+  const currentVipLevel = profile?.vip_level || 0;
+  const commissionRate = VIP_LEVELS[currentVipLevel].commission;
 
   const copyCode = () => {
     if (profile?.referral_code) {
@@ -21,6 +17,37 @@ export function InvitePage() {
       toast.success("კოდი დაკოპირდა!");
     }
   };
+
+  // Calculate milestone progress
+  const getNextMilestone = () => {
+    for (const milestone of REFERRAL_MILESTONES) {
+      if (referrals.length < milestone.count) {
+        return milestone;
+      }
+    }
+    return null;
+  };
+
+  const nextMilestone = getNextMilestone();
+
+  // Calculate completed milestones
+  const completedMilestones = REFERRAL_MILESTONES.filter(
+    (m) => referrals.length >= m.count
+  );
+
+  // Calculate referral VIP counts for free VIP display
+  const getReferralVipCounts = () => {
+    const counts: Record<number, number> = {};
+    referrals.forEach((ref) => {
+      const vipLevel = ref.vip_level || 0;
+      if (vipLevel > 0) {
+        counts[vipLevel] = (counts[vipLevel] || 0) + 1;
+      }
+    });
+    return counts;
+  };
+
+  const referralVipCounts = getReferralVipCounts();
 
   return (
     <div className="space-y-6">
@@ -41,7 +68,7 @@ export function InvitePage() {
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-1">მოიწვიე მეგობრები</h1>
         <p className="text-muted-foreground text-sm">
-          მიიღეთ $0.25 ყოველი მოწვეული მეგობრისთვის
+          მიიღე კომისია რეფერალების დავალებებიდან
         </p>
       </motion.div>
 
@@ -66,11 +93,39 @@ export function InvitePage() {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-white/80 text-sm">გამომუშავებული</p>
-            <p className="text-white font-bold text-2xl">
-              ${(referrals.length * 0.25).toFixed(2)}
-            </p>
+            <p className="text-white/80 text-sm">თქვენი კომისია</p>
+            <p className="text-white font-bold text-2xl">{commissionRate}%</p>
           </div>
+        </div>
+      </motion.div>
+
+      {/* Commission Info */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="gradient-card rounded-2xl p-4 shadow-card border border-border/30"
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <Percent className="h-5 w-5 text-primary" />
+          <h3 className="font-semibold text-foreground">რეფერალ კომისია</h3>
+        </div>
+        <p className="text-muted-foreground text-sm mb-3">
+          მიიღე {commissionRate}% თქვენი რეფერალების ყოველი დავალების შემოსავლიდან
+        </p>
+        <div className="grid grid-cols-5 gap-1 text-center">
+          {VIP_LEVELS.slice(1).map((vip) => (
+            <div 
+              key={vip.level}
+              className={cn(
+                "p-2 rounded-lg",
+                currentVipLevel === vip.level ? "bg-primary/20 border border-primary" : "bg-secondary/50"
+              )}
+            >
+              <p className="text-xs text-muted-foreground">{vip.name}</p>
+              <p className="font-bold text-foreground">{vip.commission}%</p>
+            </div>
+          ))}
         </div>
       </motion.div>
 
@@ -92,12 +147,101 @@ export function InvitePage() {
         </div>
       </motion.div>
 
+      {/* Milestone Bonuses */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="gradient-card rounded-2xl p-5 shadow-card border border-border/30"
+      >
+        <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Target className="h-5 w-5" />
+          მილსტოუნ ბონუსები
+        </h3>
+        <div className="space-y-3">
+          {REFERRAL_MILESTONES.map((milestone) => {
+            const isCompleted = referrals.length >= milestone.count;
+            const progress = Math.min((referrals.length / milestone.count) * 100, 100);
+            
+            return (
+              <div key={milestone.count} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className={cn(
+                    "text-sm",
+                    isCompleted ? "text-success font-medium" : "text-muted-foreground"
+                  )}>
+                    {milestone.count} მოწვევა
+                  </span>
+                  <span className={cn(
+                    "font-bold",
+                    isCompleted ? "text-success" : "text-foreground"
+                  )}>
+                    +${milestone.bonus}
+                  </span>
+                </div>
+                <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                  <div 
+                    className={cn(
+                      "h-full rounded-full transition-all",
+                      isCompleted ? "bg-success" : "bg-primary"
+                    )}
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {referrals.length}/{milestone.count} მოწვეული
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Free VIP Progress */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="gradient-card rounded-2xl p-5 shadow-card border border-border/30"
+      >
+        <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Crown className="h-5 w-5" />
+          უფასო VIP პროგრესი
+        </h3>
+        <p className="text-muted-foreground text-sm mb-4">
+          მოიწვიე {FREE_VIP_REQUIREMENT} მეგობარი, რომლებიც შეიძენენ VIP-ს და მიიღე იგივე VIP დონე უფასოდ
+        </p>
+        <div className="space-y-2">
+          {VIP_LEVELS.slice(1).map((vip) => {
+            const count = referralVipCounts[vip.level] || 0;
+            const canClaim = count >= FREE_VIP_REQUIREMENT && (profile?.vip_level || 0) < vip.level;
+            
+            return (
+              <div 
+                key={vip.level}
+                className={cn(
+                  "flex items-center justify-between p-3 rounded-xl",
+                  canClaim ? "bg-success/20 border border-success" : "bg-secondary/30"
+                )}
+              >
+                <span className="font-medium text-foreground">{vip.name}</span>
+                <span className={cn(
+                  "text-sm",
+                  canClaim ? "text-success font-bold" : "text-muted-foreground"
+                )}>
+                  {count}/{FREE_VIP_REQUIREMENT} შეძენილი
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
 
       {/* Invited Users List */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.25 }}
         className="gradient-card rounded-2xl p-5 shadow-card border border-border/30"
       >
         <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -124,9 +268,16 @@ export function InvitePage() {
                       {referral.nickname.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="font-medium text-foreground">{referral.nickname}</span>
+                  <div>
+                    <span className="font-medium text-foreground block">{referral.nickname}</span>
+                    {referral.vip_level > 0 && (
+                      <span className="text-xs text-primary">VIP {referral.vip_level}</span>
+                    )}
+                  </div>
                 </div>
-                <span className="text-success font-semibold">+$0.25</span>
+                <span className="text-success font-semibold text-sm">
+                  {commissionRate}% კომისია
+                </span>
               </div>
             ))}
           </div>

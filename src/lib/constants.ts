@@ -1,11 +1,21 @@
 export const VIP_LEVELS = [
-  { level: 0, name: "სტანდარტი", price: 0, reward: 0.10, color: "from-gray-600 to-gray-800" },
-  { level: 1, name: "VIP 1", price: 50, reward: 1.00, color: "from-red-700 to-red-900" },
-  { level: 2, name: "VIP 2", price: 99, reward: 2.30, color: "from-red-600 to-red-800" },
-  { level: 3, name: "VIP 3", price: 155, reward: 3.40, color: "from-red-500 to-red-700" },
-  { level: 4, name: "VIP 4", price: 230, reward: 5.00, color: "from-red-500 to-black" },
-  { level: 5, name: "VIP 5", price: 320, reward: 7.50, color: "from-red-600 to-black" },
+  { level: 0, name: "სტანდარტი", price: 0, reward: 0.10, commission: 0, color: "from-gray-600 to-gray-800" },
+  { level: 1, name: "VIP 1", price: 50, reward: 1.00, commission: 8, color: "from-red-700 to-red-900" },
+  { level: 2, name: "VIP 2", price: 99, reward: 2.30, commission: 15, color: "from-red-600 to-red-800" },
+  { level: 3, name: "VIP 3", price: 155, reward: 3.40, commission: 20, color: "from-red-500 to-red-700" },
+  { level: 4, name: "VIP 4", price: 230, reward: 5.00, commission: 25, color: "from-red-500 to-black" },
+  { level: 5, name: "VIP 5", price: 320, reward: 7.50, commission: 35, color: "from-red-600 to-black" },
 ];
+
+export const REFERRAL_MILESTONES = [
+  { count: 50, bonus: 20 },
+  { count: 100, bonus: 35 },
+  { count: 300, bonus: 50 },
+];
+
+export const FREE_VIP_REQUIREMENT = 3; // Number of referrals who must purchase a VIP level to get it free
+
+export const MIN_WITHDRAWAL_AMOUNT = 10; // Minimum withdrawal in dollars
 
 export const TASKS = [
   {
