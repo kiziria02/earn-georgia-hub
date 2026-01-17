@@ -37,19 +37,28 @@ export function useProfile() {
     enabled: !!profile?.id,
   });
 
+  // Get task completions from the last 24 hours only (tasks reset daily)
   const { data: taskCompletions } = useQuery({
     queryKey: ["taskCompletions", profile?.id],
     queryFn: async () => {
       if (!profile?.id) return [];
+      
+      // Calculate 24 hours ago
+      const twentyFourHoursAgo = new Date();
+      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+      
       const { data, error } = await supabase
         .from("task_completions")
         .select("*")
-        .eq("profile_id", profile.id);
+        .eq("profile_id", profile.id)
+        .gte("completed_at", twentyFourHoursAgo.toISOString());
       
       if (error) throw error;
       return data || [];
     },
     enabled: !!profile?.id,
+    // Refetch every minute to keep countdown accurate
+    refetchInterval: 60000,
   });
 
   const completeTask = useMutation({
