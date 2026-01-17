@@ -66,19 +66,21 @@ export function FinancePage() {
         return;
       }
 
+      // Insert withdrawal - balance is deducted by database trigger
       const { error } = await supabase.from("withdrawals").insert({
         profile_id: profile.id,
         amount,
         usdt_address: withdrawAddress,
       });
 
-      if (error) throw error;
-
-      // Update balance
-      await supabase
-        .from("profiles")
-        .update({ balance: Number(profile.balance) - amount })
-        .eq("id", profile.id);
+      if (error) {
+        // Handle insufficient balance error from trigger
+        if (error.message?.includes("Insufficient balance")) {
+          toast.error("არასაკმარისი ბალანსი");
+          return;
+        }
+        throw error;
+      }
 
       toast.success("გატანის მოთხოვნა წარმატებით გაიგზავნა!");
       setWithdrawAddress("");

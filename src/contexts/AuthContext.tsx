@@ -75,17 +75,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Check if referral code is valid
+    // Check if referral code is valid using secure function
     let referrerId: string | null = null;
     if (referralCode) {
-      const { data: referrer } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("referral_code", referralCode)
-        .single();
+      const { data: referrer } = await supabase.rpc("get_referrer_by_code" as any, {
+        p_code: referralCode,
+      });
       
       if (referrer) {
-        referrerId = referrer.id;
+        referrerId = referrer as string;
       }
     }
 

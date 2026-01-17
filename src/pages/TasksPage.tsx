@@ -31,7 +31,8 @@ export function TasksPage() {
     // Complete the task after a short delay
     setTimeout(async () => {
       try {
-        await completeTask.mutateAsync({ taskId: task.id, rewardAmount: reward });
+        // Server calculates reward based on VIP level
+        await completeTask.mutateAsync({ taskId: task.id });
         toast.success(`დავალება შესრულდა! მიიღეთ $${reward.toFixed(2)}`);
       } catch (error) {
         toast.error("დავალება უკვე შესრულებულია");

@@ -53,30 +53,20 @@ export function useProfile() {
   });
 
   const completeTask = useMutation({
-    mutationFn: async ({ taskId, rewardAmount }: { taskId: string; rewardAmount: number }) => {
+    mutationFn: async ({ taskId }: { taskId: string }) => {
       if (!profile?.id) throw new Error("No profile");
       
-      // Insert task completion
+      // Insert task completion - balance is updated by database trigger
+      // The trigger validates and calculates reward based on VIP level
       const { error: completionError } = await supabase
         .from("task_completions")
         .insert({
           profile_id: profile.id,
           task_id: taskId,
-          reward_amount: rewardAmount,
+          reward_amount: 0, // Server will override with correct amount
         });
       
       if (completionError) throw completionError;
-
-      // Update profile balance
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({
-          balance: profile.balance + rewardAmount,
-          total_earned: profile.total_earned + rewardAmount,
-        })
-        .eq("id", profile.id);
-
-      if (updateError) throw updateError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
