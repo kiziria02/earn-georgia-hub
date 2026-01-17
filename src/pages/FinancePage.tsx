@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Wallet, ArrowDownCircle, ArrowUpCircle, Copy, Check, AlertCircle } from "lucide-react";
+import { Wallet, ArrowDownCircle, ArrowUpCircle, Copy, Check, AlertCircle, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useProfile } from "@/hooks/useProfile";
+import { useSecurityCheck } from "@/hooks/useSecurityCheck";
 import { DEPOSIT_ADDRESS, MIN_WITHDRAWAL_AMOUNT } from "@/lib/constants";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,11 +13,13 @@ import { cn } from "@/lib/utils";
 
 export function FinancePage() {
   const { profile } = useProfile();
+  const { checkWithdrawal } = useSecurityCheck();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
   const [copied, setCopied] = useState(false);
   const [withdrawAddress, setWithdrawAddress] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [securityError, setSecurityError] = useState<string | null>(null);
 
   const copyAddress = () => {
     navigator.clipboard.writeText(DEPOSIT_ADDRESS);
@@ -27,6 +30,7 @@ export function FinancePage() {
 
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSecurityError(null);
     
     if (!profile) return;
 
@@ -53,6 +57,15 @@ export function FinancePage() {
 
     setIsSubmitting(true);
     try {
+      // Security check before withdrawal
+      const securityResult = await checkWithdrawal(profile.id, withdrawAddress.trim());
+      
+      if (!securityResult.allowed) {
+        setSecurityError(securityResult.message || "უსაფრთხოების შემოწმება ვერ მოხერხდა");
+        toast.error(securityResult.message || "გატანა დაბლოკილია უსაფრთხოების მიზეზით");
+        return;
+      }
+
       const { error } = await supabase.from("withdrawals").insert({
         profile_id: profile.id,
         amount,
@@ -188,6 +201,17 @@ export function FinancePage() {
           </div>
         ) : (
           <form onSubmit={handleWithdraw} className="space-y-4">
+            {/* Security error alert */}
+            {securityError && (
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/30">
+                <ShieldAlert className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-destructive">უსაფრთხოების გაფრთხილება</p>
+                  <p className="text-xs text-destructive/80 mt-1">{securityError}</p>
+                </div>
+              </div>
+            )}
+
             {/* Minimum withdrawal notice */}
             <div className={cn(
               "flex items-center gap-2 p-3 rounded-xl",

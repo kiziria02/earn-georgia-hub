@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Coins, User, Lock, Mail, Gift } from "lucide-react";
+import { Coins, User, Lock, Mail, Gift, ShieldAlert, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFingerprint } from "@/hooks/useFingerprint";
+import { useSecurityCheck } from "@/hooks/useSecurityCheck";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
 
@@ -13,9 +15,13 @@ export function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [securityError, setSecurityError] = useState<string | null>(null);
   const { signUp, signIn } = useAuth();
+  const { fingerprint, fingerprintLoading } = useFingerprint();
+  const { checkRegistration } = useSecurityCheck();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
@@ -28,6 +34,7 @@ export function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setSecurityError(null);
 
     try {
       if (isLogin) {
@@ -36,12 +43,27 @@ export function AuthPage() {
       } else {
         if (!nickname.trim()) {
           toast.error("გთხოვთ შეიყვანოთ მეტსახელი");
+          setIsLoading(false);
           return;
         }
-        await signUp(email, password, nickname, referralCode);
+
+        // Pre-registration security check
+        if (fingerprint) {
+          const securityResult = await checkRegistration(undefined, phoneNumber || undefined);
+          
+          if (!securityResult.allowed) {
+            setSecurityError(securityResult.message || "რეგისტრაცია დაბლოკილია");
+            toast.error(securityResult.message || "რეგისტრაცია დაბლოკილია უსაფრთხოების მიზეზით");
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        await signUp(email, password, nickname, referralCode, fingerprint || undefined, phoneNumber || undefined);
         toast.success("წარმატებით დარეგისტრირდით!");
       }
     } catch (error: any) {
+      setSecurityError(error.message);
       toast.error(error.message || "შეცდომა მოხდა");
     } finally {
       setIsLoading(false);
@@ -80,6 +102,17 @@ export function AuthPage() {
         <h2 className="text-xl font-bold text-foreground text-center mb-6">
           {isLogin ? "შესვლა" : "რეგისტრაცია"}
         </h2>
+
+        {/* Security error alert */}
+        {securityError && !isLogin && (
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/30 mb-4">
+            <ShieldAlert className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-destructive">უსაფრთხოების გაფრთხილება</p>
+              <p className="text-xs text-destructive/80 mt-1">{securityError}</p>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
@@ -130,6 +163,23 @@ export function AuthPage() {
 
           {!isLogin && (
             <div className="space-y-2">
+              <Label htmlFor="phone" className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                ტელეფონის ნომერი (არასავალდებულო)
+              </Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="+995 XXX XXX XXX"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="bg-secondary/50"
+              />
+            </div>
+          )}
+
+          {!isLogin && (
+            <div className="space-y-2">
               <Label htmlFor="referral" className="flex items-center gap-2">
                 <Gift className="h-4 w-4 text-muted-foreground" />
                 რეფერალ კოდი (არასავალდებულო)
@@ -146,14 +196,14 @@ export function AuthPage() {
 
           <Button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || (!isLogin && fingerprintLoading)}
             className="w-full py-6 text-lg font-semibold text-white hover:opacity-90"
             style={{
               background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
               boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
             }}
           >
-            {isLoading ? "იტვირთება..." : isLogin ? "შესვლა" : "რეგისტრაცია"}
+            {isLoading ? "იტვირთება..." : fingerprintLoading && !isLogin ? "უსაფრთხოების შემოწმება..." : isLogin ? "შესვლა" : "რეგისტრაცია"}
           </Button>
         </form>
 
