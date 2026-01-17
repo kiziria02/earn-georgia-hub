@@ -76,6 +76,38 @@ export type Database = {
           },
         ]
       }
+      milestone_claims: {
+        Row: {
+          bonus_amount: number
+          claimed_at: string
+          id: string
+          milestone_count: number
+          profile_id: string
+        }
+        Insert: {
+          bonus_amount: number
+          claimed_at?: string
+          id?: string
+          milestone_count: number
+          profile_id: string
+        }
+        Update: {
+          bonus_amount?: number
+          claimed_at?: string
+          id?: string
+          milestone_count?: number
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "milestone_claims_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_ips: {
         Row: {
           first_seen_at: string
@@ -365,6 +397,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_milestone_bonuses: {
+        Args: { p_referrer_id: string }
+        Returns: undefined
+      }
       check_registration_allowed: {
         Args: {
           p_device_fingerprint: string
@@ -387,6 +423,7 @@ export type Database = {
         Returns: Json
       }
       get_referral_reward: { Args: { p_vip_level: number }; Returns: number }
+      get_referrer_by_code: { Args: { p_code: string }; Returns: string }
       get_task_commission_rate: {
         Args: { p_vip_level: number }
         Returns: number
