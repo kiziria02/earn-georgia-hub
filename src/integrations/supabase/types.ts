@@ -76,14 +76,40 @@ export type Database = {
           },
         ]
       }
+      profile_ips: {
+        Row: {
+          first_seen_at: string
+          id: string
+          ip_address: string
+          last_seen_at: string
+          profile_id: string
+        }
+        Insert: {
+          first_seen_at?: string
+          id?: string
+          ip_address: string
+          last_seen_at?: string
+          profile_id: string
+        }
+        Update: {
+          first_seen_at?: string
+          id?: string
+          ip_address?: string
+          last_seen_at?: string
+          profile_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           balance: number
+          block_reason: string | null
           created_at: string
           device_fingerprint: string | null
           id: string
           is_suspicious: boolean | null
           nickname: string
+          phone_number: string | null
           referral_code: string
           referrer_id: string | null
           registration_ip: string | null
@@ -92,14 +118,17 @@ export type Database = {
           updated_at: string
           user_id: string | null
           vip_level: number
+          withdrawal_blocked: boolean | null
         }
         Insert: {
           balance?: number
+          block_reason?: string | null
           created_at?: string
           device_fingerprint?: string | null
           id?: string
           is_suspicious?: boolean | null
           nickname: string
+          phone_number?: string | null
           referral_code?: string
           referrer_id?: string | null
           registration_ip?: string | null
@@ -108,14 +137,17 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           vip_level?: number
+          withdrawal_blocked?: boolean | null
         }
         Update: {
           balance?: number
+          block_reason?: string | null
           created_at?: string
           device_fingerprint?: string | null
           id?: string
           is_suspicious?: boolean | null
           nickname?: string
+          phone_number?: string | null
           referral_code?: string
           referrer_id?: string | null
           registration_ip?: string | null
@@ -124,6 +156,7 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           vip_level?: number
+          withdrawal_blocked?: boolean | null
         }
         Relationships: [
           {
@@ -201,6 +234,30 @@ export type Database = {
           id?: string
           ip_address?: string
           was_blocked?: boolean | null
+        }
+        Relationships: []
+      }
+      suspicious_wallets: {
+        Row: {
+          first_seen_profile_id: string
+          flagged_at: string
+          id: string
+          is_active: boolean | null
+          usdt_address: string
+        }
+        Insert: {
+          first_seen_profile_id: string
+          flagged_at?: string
+          id?: string
+          is_active?: boolean | null
+          usdt_address: string
+        }
+        Update: {
+          first_seen_profile_id?: string
+          flagged_at?: string
+          id?: string
+          is_active?: boolean | null
+          usdt_address?: string
         }
         Relationships: []
       }
@@ -316,10 +373,27 @@ export type Database = {
         }
         Returns: Json
       }
+      check_registration_allowed_v2: {
+        Args: {
+          p_device_fingerprint: string
+          p_ip_address: string
+          p_phone_number?: string
+          p_telegram_id?: string
+        }
+        Returns: Json
+      }
+      check_withdrawal_allowed: {
+        Args: { p_profile_id: string; p_usdt_address: string }
+        Returns: Json
+      }
       get_referral_reward: { Args: { p_vip_level: number }; Returns: number }
       get_task_commission_rate: {
         Args: { p_vip_level: number }
         Returns: number
+      }
+      log_profile_ip: {
+        Args: { p_ip_address: string; p_profile_id: string }
+        Returns: undefined
       }
       log_registration_attempt: {
         Args: {
