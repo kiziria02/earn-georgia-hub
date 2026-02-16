@@ -40,14 +40,8 @@ export function VipPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center"
       >
-        <div 
-          className="inline-flex items-center justify-center p-3 rounded-2xl mb-4"
-          style={{
-            background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
-            boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
-          }}
-        >
-          <Crown className="h-8 w-8 text-white" />
+        <div className="inline-flex items-center justify-center p-3 rounded-2xl mb-4 gradient-primary shadow-primary">
+          <Crown className="h-8 w-8 text-primary-foreground" />
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-1">VIP ცენტრი</h1>
         <p className="text-muted-foreground text-sm">
@@ -59,24 +53,20 @@ export function VipPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="rounded-2xl p-5 text-center"
-        style={{
-          background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
-          boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
-        }}
+        className="rounded-2xl p-5 text-center gradient-primary shadow-primary"
       >
-        <p className="text-white/80 text-sm mb-1">თქვენი VIP სტატუსი</p>
-        <p className="text-white font-bold text-2xl">
+        <p className="text-primary-foreground/80 text-sm mb-1">თქვენი VIP სტატუსი</p>
+        <p className="text-primary-foreground font-bold text-2xl">
           {VIP_LEVELS[currentVipLevel].name}
         </p>
         <div className="flex justify-center gap-6 mt-3">
           <div>
-            <p className="text-white/80 text-xs">ჯილდო/დავალება</p>
-            <p className="text-white font-bold">${VIP_LEVELS[currentVipLevel].reward.toFixed(2)}</p>
+            <p className="text-primary-foreground/80 text-xs">ჯილდო/დავალება</p>
+            <p className="text-primary-foreground font-bold">${VIP_LEVELS[currentVipLevel].reward.toFixed(2)}</p>
           </div>
           <div>
-            <p className="text-white/80 text-xs">რეფერალ კომისია</p>
-            <p className="text-white font-bold">{VIP_LEVELS[currentVipLevel].commission}%</p>
+            <p className="text-primary-foreground/80 text-xs">რეფერალ კომისია</p>
+            <p className="text-primary-foreground font-bold">{VIP_LEVELS[currentVipLevel].commission}%</p>
           </div>
         </div>
       </motion.div>
@@ -171,13 +161,9 @@ export function VipPage() {
                   disabled={isOwned}
                   className={cn(
                     "w-full",
-                    !isOwned && "text-white hover:opacity-90"
+                    !isOwned && "gradient-primary shadow-primary text-primary-foreground hover:opacity-90"
                   )}
                   variant={isOwned ? "secondary" : "default"}
-                  style={!isOwned ? {
-                    background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
-                    boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
-                  } : undefined}
                 >
                   {isOwned ? (
                     <>

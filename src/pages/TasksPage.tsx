@@ -74,11 +74,9 @@ export function TasksPage() {
         
         {/* Show countdown only if there are completed tasks */}
         {nextResetTime && completedTasksCount > 0 && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{
-            background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
-          }}>
-            <Clock className="h-4 w-4 text-white" />
-            <span className="text-white font-mono text-sm font-bold">{formattedTime}</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg gradient-primary">
+            <Clock className="h-4 w-4 text-primary-foreground" />
+            <span className="text-primary-foreground font-mono text-sm font-bold">{formattedTime}</span>
           </div>
         )}
       </motion.div>
@@ -88,22 +86,18 @@ export function TasksPage() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.15 }}
-        className="rounded-2xl p-4"
-        style={{
-          background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
-          boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
-        }}
+        className="rounded-2xl p-4 gradient-primary shadow-primary"
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-white/80 text-sm">თქვენი VIP დონე</p>
-            <p className="text-white font-bold text-lg">
+            <p className="text-primary-foreground/80 text-sm">თქვენი VIP დონე</p>
+            <p className="text-primary-foreground font-bold text-lg">
               {VIP_LEVELS[vipLevel].name}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-white/80 text-sm">ჯილდო დავალებაზე</p>
-            <p className="text-white font-bold text-lg">${reward.toFixed(2)}</p>
+            <p className="text-primary-foreground/80 text-sm">ჯილდო დავალებაზე</p>
+            <p className="text-primary-foreground font-bold text-lg">${reward.toFixed(2)}</p>
           </div>
         </div>
       </motion.div>
@@ -128,10 +122,10 @@ export function TasksPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-center"
+          className="p-4 rounded-xl bg-success/10 border border-success/30 text-center"
         >
-          <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto mb-2" />
-          <p className="text-green-500 font-semibold">ყველა დავალება შესრულებულია!</p>
+          <CheckCircle2 className="h-8 w-8 text-success mx-auto mb-2" />
+          <p className="text-success font-semibold">ყველა დავალება შესრულებულია!</p>
           <p className="text-muted-foreground text-sm mt-1">
             შემდეგი განახლება: {formattedTime}
           </p>
@@ -174,12 +168,8 @@ export function TasksPage() {
                   variant={isCompleted ? "secondary" : "default"}
                   size="sm"
                   className={cn(
-                    !isCompleted && "text-white hover:opacity-90"
+                    !isCompleted && "gradient-primary shadow-primary text-primary-foreground hover:opacity-90"
                   )}
-                  style={!isCompleted ? {
-                    background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
-                    boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
-                  } : undefined}
                 >
                   {isCompleted ? (
                     "შესრულდა"
