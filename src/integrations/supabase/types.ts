@@ -422,6 +422,10 @@ export type Database = {
         Args: { p_profile_id: string; p_usdt_address: string }
         Returns: Json
       }
+      claim_free_vip: {
+        Args: { p_profile_id: string; p_vip_level: number }
+        Returns: Json
+      }
       get_referral_reward: { Args: { p_vip_level: number }; Returns: number }
       get_referrer_by_code: { Args: { p_code: string }; Returns: string }
       get_task_commission_rate: {
