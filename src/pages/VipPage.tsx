@@ -5,6 +5,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { VIP_LEVELS, FREE_VIP_REQUIREMENT } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export function VipPage() {
   const { profile, referrals } = useProfile();
@@ -149,7 +150,25 @@ export function VipPage() {
 
               {canGetFree ? (
                 <Button
-                  onClick={() => toast.success("თქვენ მიიღეთ უფასო VIP განახლება!")}
+                  onClick={async () => {
+                    if (!profile?.id) return;
+                    try {
+                      const { data, error } = await supabase.rpc("claim_free_vip" as any, {
+                        p_profile_id: profile.id,
+                        p_vip_level: vip.level,
+                      });
+                      if (error) throw error;
+                      const result = data as any;
+                      if (result?.success) {
+                        toast.success("თქვენ მიიღეთ უფასო VIP განახლება!");
+                        window.location.reload();
+                      } else {
+                        toast.error(result?.message || "VIP განახლება ვერ მოხერხდა");
+                      }
+                    } catch {
+                      toast.error("VIP განახლება ვერ მოხერხდა");
+                    }
+                  }}
                   className="w-full bg-success text-white hover:bg-success/90"
                 >
                   <Check className="h-4 w-4 mr-2" />
