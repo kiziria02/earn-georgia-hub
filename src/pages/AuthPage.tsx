@@ -71,7 +71,7 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8" style={{ background: "linear-gradient(135deg, hsl(260 40% 92%) 0%, hsl(0 0% 100%) 100%)" }}>
       {/* Logo */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -79,14 +79,8 @@ export function AuthPage() {
         transition={{ duration: 0.5 }}
         className="mb-8 text-center"
       >
-        <div 
-          className="inline-flex items-center justify-center p-4 rounded-3xl mb-4 animate-float"
-          style={{
-            background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
-            boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
-          }}
-        >
-          <Coins className="h-12 w-12 text-white" />
+        <div className="inline-flex items-center justify-center p-4 rounded-3xl mb-4 animate-float gradient-primary shadow-primary">
+          <Coins className="h-12 w-12 text-primary-foreground" />
         </div>
         <h1 className="text-3xl font-bold text-gradient-gold">AutoEarn</h1>
         <p className="text-muted-foreground mt-2">გამოიმუშავე ფული მარტივად</p>
@@ -197,10 +191,10 @@ export function AuthPage() {
           <Button
             type="submit"
             disabled={isLoading || (!isLogin && fingerprintLoading)}
-            className="w-full py-6 text-lg font-semibold text-white hover:opacity-90"
+            className="w-full py-6 text-lg font-semibold text-foreground hover:opacity-90 border border-border/30"
             style={{
-              background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)",
-              boxShadow: "0 4px 20px -4px rgba(139, 0, 0, 0.4)"
+              background: "linear-gradient(to right, hsl(0 0% 100%), hsl(260 50% 90%))",
+              boxShadow: "0 4px 16px -4px hsl(260 60% 65% / 0.2)"
             }}
           >
             {isLoading ? "იტვირთება..." : fingerprintLoading && !isLogin ? "უსაფრთხოების შემოწმება..." : isLogin ? "შესვლა" : "რეგისტრაცია"}
