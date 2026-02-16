@@ -76,11 +76,8 @@ export function HomePage() {
         className="gradient-card rounded-2xl p-5 shadow-card border border-border/30"
       >
         <div className="flex items-center gap-3 mb-4">
-          <div 
-            className="p-2 rounded-xl"
-            style={{ background: "linear-gradient(135deg, #8B0000 0%, #000000 100%)" }}
-          >
-            <Shield className="h-5 w-5 text-white" />
+          <div className="p-2 rounded-xl gradient-primary">
+            <Shield className="h-5 w-5 text-primary-foreground" />
           </div>
           <h3 className="text-lg font-semibold text-foreground">ჩვენს შესახებ</h3>
         </div>
