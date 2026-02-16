@@ -50,15 +50,23 @@ export function FinancePage() {
       return;
     }
 
-    if (!withdrawAddress.trim()) {
+    const trimmedAddress = withdrawAddress.trim();
+    if (!trimmedAddress) {
       toast.error("გთხოვთ შეიყვანოთ USDT მისამართი");
+      return;
+    }
+
+    // Validate TRC20 address format
+    const TRC20_ADDRESS_REGEX = /^T[A-Za-z1-9]{33}$/;
+    if (!TRC20_ADDRESS_REGEX.test(trimmedAddress)) {
+      toast.error("არასწორი USDT TRC20 მისამართის ფორმატი");
       return;
     }
 
     setIsSubmitting(true);
     try {
       // Security check before withdrawal
-      const securityResult = await checkWithdrawal(profile.id, withdrawAddress.trim());
+      const securityResult = await checkWithdrawal(profile.id, trimmedAddress);
       
       if (!securityResult.allowed) {
         setSecurityError(securityResult.message || "უსაფრთხოების შემოწმება ვერ მოხერხდა");
